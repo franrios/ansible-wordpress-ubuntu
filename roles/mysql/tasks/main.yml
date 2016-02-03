@@ -1,0 +1,26 @@
+---
+- name: Install Mysql package
+  apt: name={{ item }} state=present
+  with_items:
+   - mysql-server
+   - python-pip
+
+- name: Upgrade to te latest version
+  command: pip install -U pip
+
+- name: Install Mysql new package
+  apt: name={{ item }} state=present
+  with_items:
+   - python-dev
+   - libmysqlclient-dev
+
+- name: Install MySQL-python with pip
+  pip: name=MySQL-python
+
+- name: Create Mysql configuration file
+  template: src=my.cnf.j2 dest=/etc/my.cnf
+  notify:
+  - restart mysql
+
+- name: Start Mysql Service
+  service: name=mysql state=started enabled=yes
